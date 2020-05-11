@@ -1,7 +1,6 @@
 #include <RoboCatShared.h>
 #include <windows.h>
 
-#include <SDL.h>
 #include "SFML\Graphics.hpp"
 
 #include <Log.h>

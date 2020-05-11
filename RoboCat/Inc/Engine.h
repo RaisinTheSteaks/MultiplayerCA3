@@ -1,4 +1,3 @@
-#include <SDL_events.h>
 
 class Engine
 {

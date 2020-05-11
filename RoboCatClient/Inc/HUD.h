@@ -1,6 +1,5 @@
 //I take care of rendering things!
 
-#include <SDL_ttf.h>
 
 class HUD
 {
@@ -28,9 +27,7 @@ private:
 	Vector3										mScoreBoardOrigin;
 	Vector3										mScoreOffset;
 	Vector3										mHealthOffset;
-	SDL_Rect									mViewTransform;
 
-	TTF_Font*									mFont;
 	int											mHealth;
 };
 
