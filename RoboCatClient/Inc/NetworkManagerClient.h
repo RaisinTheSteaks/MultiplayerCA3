@@ -7,7 +7,8 @@ class NetworkManagerClient : public NetworkManager
 	{
 		NCS_Uninitialized,
 		NCS_SayingHello,
-		NCS_Welcomed
+		NCS_Welcomed,
+		NCS_Test
 	};
 
 public:
@@ -23,9 +24,12 @@ public:
 			float									GetRoundTripTime()		const	{ return mAvgRoundTripTime.GetValue(); }
 			int		GetPlayerId()											const	{ return mPlayerId; }
 			float	GetLastMoveProcessedByServerTimestamp()					const	{ return mLastMoveProcessedByServerTimestamp; }
+			void	SetStateToTest();
 private:
 			NetworkManagerClient();
 			void Init( const SocketAddress& inServerAddress, const string& inName );
+
+			void	SendTestPacket();
 
 			void	UpdateSayingHello();
 			void	SendHelloPacket();

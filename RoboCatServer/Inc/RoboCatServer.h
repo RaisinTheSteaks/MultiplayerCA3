@@ -22,6 +22,7 @@ protected:
 private:
 
 	void HandleShooting();
+	//void HandleTestEnterKey();
 
 	ECatControlType	mCatControlType;
 

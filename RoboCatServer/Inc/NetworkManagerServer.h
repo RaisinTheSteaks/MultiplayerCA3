@@ -23,6 +23,8 @@ public:
 private:
 			NetworkManagerServer();
 
+			void	SendRespondTestPacket(ClientProxyPtr inClientProxy, InputMemoryBitStream& inInputStream);
+
 			void	HandlePacketFromNewClient( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress );
 			void	ProcessPacket( ClientProxyPtr inClientProxy, InputMemoryBitStream& inInputStream );
 			
@@ -46,6 +48,7 @@ private:
 
 	AddressToClientMap		mAddressToClientMap;
 	IntToClientMap			mPlayerIdToClientMap;
+	IntToClientMap			mPlayerReady;
 
 	int				mNewPlayerId;
 	int				mNewNetworkId;

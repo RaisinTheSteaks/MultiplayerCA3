@@ -14,6 +14,7 @@ RoboCat::RoboCat() :
 	mThrustDir( sf::Vector2f(0.f, 0.f) ),
 	mPlayerId( 0 ),
 	mIsShooting( false ),
+	mIsEntered(false),
 	mHealth( 10 )
 {
 	SetCollisionRadius( 20.f );
@@ -69,6 +70,7 @@ void RoboCat::ProcessInput( float inDeltaTime, const InputState& inInputState )
 		SetRotation(rot);
 
 	mIsShooting = inInputState.IsShooting();
+	mIsEntered = inInputState.IsEntered();
 }
 
 void RoboCat::AdjustVelocityByThrust( float inDeltaTime )

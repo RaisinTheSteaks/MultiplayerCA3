@@ -70,6 +70,7 @@ protected:
 	uint8_t					mHealth;
 
 	bool				mIsShooting;
+	bool				mIsEntered;
 
 	
 

@@ -31,4 +31,5 @@ private:
 	SFHealthSpriteComponentPtr m_healthSprite;
 
 	bool m_textureIsDirty;
+	bool mIsPressedOnce;
 };

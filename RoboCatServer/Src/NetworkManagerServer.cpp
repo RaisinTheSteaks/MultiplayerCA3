@@ -64,12 +64,41 @@ void NetworkManagerServer::ProcessPacket( ClientProxyPtr inClientProxy, InputMem
 			HandleInputPacket( inClientProxy, inInputStream );
 		}
 		break;
+	case kTestCC:
+		SendRespondTestPacket(inClientProxy, inInputStream);
+		break;
 	default:
 		LOG( "Unknown packet type received from %s", inClientProxy->GetSocketAddress().ToString().c_str() );
 		break;
 	}
 }
 
+void NetworkManagerServer::SendRespondTestPacket(ClientProxyPtr inClientProxy, InputMemoryBitStream& inInputStream)
+{
+	OutputMemoryBitStream respondPacket;
+	uint32_t playerID;
+	inInputStream.Read(playerID);
+	//respondPacket.Write(inClientProxy->GetPlayerId());
+	if (mPlayerReady.find(playerID) == mPlayerReady.end())
+	{
+		LOG("Server getting test packet from client named: '%s' with player id: %d", inClientProxy->GetName().c_str(), inClientProxy->GetPlayerId());
+		mPlayerReady[playerID] = inClientProxy;
+		if (mPlayerReady.size() == mPlayerIdToClientMap.size())
+		{
+			respondPacket.Write(kRespondCC);
+
+			for (auto it = mPlayerReady.begin(), end = mPlayerReady.end(); it != end; ++it)
+			{
+				ClientProxyPtr clientProxy = it->second;
+				SendPacket(respondPacket, clientProxy->GetSocketAddress());
+
+			}
+		}
+		
+	}
+
+	
+}
 
 void NetworkManagerServer::HandlePacketFromNewClient( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress )
 {

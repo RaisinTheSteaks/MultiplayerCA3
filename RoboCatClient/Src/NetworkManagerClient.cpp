@@ -8,6 +8,11 @@ namespace
 	const float kTimeBetweenInputPackets = 0.033f;
 }
 
+void NetworkManagerClient::SetStateToTest()
+{
+	mState = NCS_Test;
+}
+
 NetworkManagerClient::NetworkManagerClient() :
 	mState( NCS_Uninitialized ),
 	mDeliveryNotificationManager( true, false ),
@@ -48,6 +53,10 @@ void NetworkManagerClient::ProcessPacket( InputMemoryBitStream& inInputStream, c
 			HandleStatePacket( inInputStream );
 		}
 		break;
+	case kRespondCC:
+		LOG("'%s' got test packet back", mName.c_str());
+		mState = NCS_Welcomed;
+		break;
 	}
 }
 
@@ -62,7 +71,20 @@ void NetworkManagerClient::SendOutgoingPackets()
 	case NCS_Welcomed:
 		UpdateSendingInputPacket();
 		break;
+	case NCS_Test:
+		SendTestPacket();
+		break;
 	}
+}
+
+void NetworkManagerClient::SendTestPacket()
+{
+	OutputMemoryBitStream testPacket;
+
+	testPacket.Write(kTestCC);
+	testPacket.Write(mPlayerId);
+
+	SendPacket(testPacket, mServerAddress);
 }
 
 void NetworkManagerClient::UpdateSayingHello()
