@@ -36,7 +36,8 @@ void NetworkManagerServer::ProcessPacket( InputMemoryBitStream& inInputStream, c
 	if( it == mAddressToClientMap.end() )
 	{
 		//didn't find one? it's a new cilent..is the a HELO? if so, create a client proxy...
-		HandlePacketFromNewClient( inInputStream, inFromAddress );
+		if(!mIsAllPlayerReady)
+			HandlePacketFromNewClient( inInputStream, inFromAddress );
 	}
 	else
 	{
