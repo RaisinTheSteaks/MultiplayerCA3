@@ -36,6 +36,11 @@ void RoboCatServer::Update()
 				ProcessInput( deltaTime, currentState );
 				SimulateMovement( deltaTime );
 
+				if (NetworkManagerServer::sInstance->GetAllPlayerReady())
+				{
+					mIsReadyToPlay = true;
+				}
+
 				//LOG( "Server Move Time: %3.4f deltaTime: %3.4f left rot at %3.4f", unprocessedMove.GetTimestamp(), deltaTime, GetRotation() );
 
 			}

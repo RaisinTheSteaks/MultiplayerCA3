@@ -7,7 +7,8 @@ NetworkManagerServer::NetworkManagerServer() :
 	mNewPlayerId( 1 ),
 	mNewNetworkId( 1 ),
 	mTimeBetweenStatePackets( 0.033f ),
-	mClientDisconnectTimeout( 3.f )
+	mClientDisconnectTimeout( 3.f ),
+	mIsAllPlayerReady(false)
 {
 }
 
@@ -91,7 +92,7 @@ void NetworkManagerServer::SendRespondTestPacket(ClientProxyPtr inClientProxy, I
 			{
 				ClientProxyPtr clientProxy = it->second;
 				SendPacket(respondPacket, clientProxy->GetSocketAddress());
-
+				mIsAllPlayerReady = true;
 			}
 		}
 		

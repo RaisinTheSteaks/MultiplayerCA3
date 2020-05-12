@@ -46,7 +46,6 @@ void RoboCatClient::Update()
 			float deltaTime = pendingMove->GetDeltaTime();
 			
 			//apply that input
-			
 			ProcessInput( deltaTime, pendingMove->GetInputState() );
 
 			//and simulate!
@@ -63,6 +62,8 @@ void RoboCatClient::Update()
 				NetworkManagerClient::sInstance->SetStateToWelcomed();
 
 			}
+
+
 
 			SimulateMovement( deltaTime );
 			

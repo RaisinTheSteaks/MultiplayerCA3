@@ -44,10 +44,13 @@ void RoboCat::ProcessInput( float inDeltaTime, const InputState& inInputState )
 	//float inputForwardDelta = inInputState.GetDesiredVerticalDelta();
 	//mThrustDir = inputForwardDelta;
 
+
 	float inputHorizontalDelta = inInputState.GetDesiredHorizontalDelta();
 	mThrustDir.x = inputHorizontalDelta;
 	float inputForwardDelta = inInputState.GetDesiredVerticalDelta();
 	mThrustDir.y = -inputForwardDelta;
+
+	
 
 	
 	if (mThrustDir.x == 1 && mThrustDir.y == 1)
@@ -69,11 +72,13 @@ void RoboCat::ProcessInput( float inDeltaTime, const InputState& inInputState )
 	
 	if (rot != -1)
 		SetRotation(rot);
+
 	if (mIsReadyToPlay)
 	{
 		mIsShooting = inInputState.IsShooting();
-		mIsEntered = inInputState.IsEntered();
 	}
+
+	mIsEntered = inInputState.IsEntered();
 }
 
 void RoboCat::AdjustVelocityByThrust( float inDeltaTime )
@@ -87,10 +92,11 @@ void RoboCat::AdjustVelocityByThrust( float inDeltaTime )
 
 void RoboCat::SimulateMovement( float inDeltaTime )
 {
-	if (mIsReadyToPlay) 
-	{
+	//if (mIsReadyToPlay) 
+	//{
 		//simulate us...
-		AdjustVelocityByThrust(inDeltaTime);
+		if (mIsReadyToPlay)
+			AdjustVelocityByThrust(inDeltaTime);
 
 		// Replace with a "TryMove" that preemptively checks for collisions.
 		TryMove(mVelocity * inDeltaTime);
@@ -98,7 +104,7 @@ void RoboCat::SimulateMovement( float inDeltaTime )
 
 		// Will encompass the collisions with everything except the walls.
 		ProcessCollisions();
-	}
+	//}
 }
 
 void RoboCat::Update()
@@ -296,4 +302,9 @@ uint32_t RoboCat::Write( OutputMemoryBitStream& inOutputStream, uint32_t inDirty
 	}
 
 	return writtenState;
+}
+
+void RoboCat::SetReadyToPlay(bool ready)
+{
+	mIsReadyToPlay = ready;
 }

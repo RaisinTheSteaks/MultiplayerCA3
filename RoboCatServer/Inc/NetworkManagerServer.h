@@ -19,6 +19,7 @@ public:
 			void			RespawnCats();
 
 			ClientProxyPtr	GetClientProxy( int inPlayerId ) const;
+			bool			GetAllPlayerReady() const { return mIsAllPlayerReady; }
 
 private:
 			NetworkManagerServer();
@@ -56,6 +57,7 @@ private:
 	float			mTimeOfLastSatePacket;
 	float			mTimeBetweenStatePackets;
 	float			mClientDisconnectTimeout;
+	bool			mIsAllPlayerReady;
 };
 
 
