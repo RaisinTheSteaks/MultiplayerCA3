@@ -6,6 +6,8 @@ public:
 	virtual void Update();
 	virtual void	HandleDying() override;
 
+	void UpdateWinRate();
+
 	virtual void	Read( InputMemoryBitStream& inInputStream ) override;
 
 	void DoClientSidePredictionAfterReplicationForLocalCat( uint32_t inReadState );

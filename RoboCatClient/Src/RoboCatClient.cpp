@@ -1,5 +1,6 @@
 #include <RoboCatClientPCH.h>
-
+#include <iostream>
+#include <fstream>
 
 
 RoboCatClient::RoboCatClient() :
@@ -18,6 +19,8 @@ void RoboCatClient::HandleDying()
 {
 	RoboCat::HandleDying();
 
+	UpdateWinRate();
+	
 	//and if we're local, tell the hud so our health goes away!
 	if( GetPlayerId() == NetworkManagerClient::sInstance->GetPlayerId() )
 	{
@@ -25,6 +28,49 @@ void RoboCatClient::HandleDying()
 	}
 }
 
+void RoboCatClient::UpdateWinRate()
+{
+	std::ifstream scoreFile("../Assets/WLA_Scoresheet.txt");
+	if (scoreFile.is_open())
+	{
+		string line = "";
+		float win = 0.f;
+		float lose = 0.f;
+		float avg = 0.f;
+		for (int i = 0; i < 3; i++)
+		{
+			std::getline(scoreFile, line);
+			if (line != "")
+			{
+				if (i == 0)
+					win = std::stof(line);
+
+				if (i == 1)
+					lose = std::stof(line);
+
+				if (i == 2)
+					avg = std::stof(line);
+			}
+			else
+			{
+				std::cout << "NULL LINE: " << i << std::endl;
+			}
+		}
+
+		lose++;
+		avg = (win + lose) / 2.0f;
+		scoreFile.close();
+
+		std::ofstream out("../Assets/WLA_Scoresheet.txt", std::ios::out | std::ios::trunc);
+		out << win << "\n" << lose << "\n" << avg << "\n";
+		out.close();
+	}
+	else
+	{
+		scoreFile.close();
+		std::cout << "Unable to open score file" << std::endl;
+	}
+}
 
 void RoboCatClient::Update()
 {
