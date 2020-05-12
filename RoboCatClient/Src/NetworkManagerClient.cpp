@@ -1,5 +1,5 @@
 #include <RoboCatClientPCH.h>
-
+#include "NetworkProtocol.hpp"
 NetworkManagerClient*	NetworkManagerClient::sInstance;
 
 namespace
@@ -7,6 +7,7 @@ namespace
 	const float kTimeBetweenHellos = 1.f;
 	const float kTimeBetweenInputPackets = 0.033f;
 }
+
 
 NetworkManagerClient::NetworkManagerClient() :
 	mState( NCS_Uninitialized ),
@@ -35,14 +36,15 @@ void NetworkManagerClient::Init( const SocketAddress& inServerAddress, const str
 
 void NetworkManagerClient::ProcessPacket( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress )
 {
-	uint32_t	packetType;
+	ServerPacketType::Type	packetType;
 	inInputStream.Read( packetType );
+	
 	switch( packetType )
 	{
-	case kWelcomeCC:
+	case ServerPacketType::Type::Welcome:
 		HandleWelcomePacket( inInputStream );
 		break;
-	case kStateCC:
+	case ServerPacketType::Type::State:
 		if( mDeliveryNotificationManager.ReadAndProcessState( inInputStream ) )
 		{
 			HandleStatePacket( inInputStream );

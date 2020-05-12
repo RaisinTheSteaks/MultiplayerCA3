@@ -1,5 +1,5 @@
 #include <RoboCatServerPCH.h>
-
+#include "NetworkProtocol.hpp"
 NetworkManagerServer*	NetworkManagerServer::sInstance;
 
 
@@ -129,7 +129,7 @@ void NetworkManagerServer::SendWelcomePacket( ClientProxyPtr inClientProxy )
 {
 	OutputMemoryBitStream welcomePacket; 
 
-	welcomePacket.Write( kWelcomeCC );
+	welcomePacket.Write( ServerPacketType::Type::Welcome );
 	welcomePacket.Write( inClientProxy->GetPlayerId() );
 
 	LOG( "Server Welcoming, new client '%s' as player %d", inClientProxy->GetName().c_str(), inClientProxy->GetPlayerId() );

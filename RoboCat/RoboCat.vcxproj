@@ -373,6 +373,7 @@
     <ClInclude Include="Inc\AckRange.h" />
     <ClInclude Include="Inc\ConnectionDetails.h" />
     <ClInclude Include="Inc\Line.hpp" />
+    <ClInclude Include="Inc\NetworkProtocol.hpp" />
     <ClInclude Include="Inc\ShadowFactory.hpp" />
     <ClInclude Include="Inc\SoundManager.h" />
     <ClInclude Include="Inc\Trigonometry.hpp" />
