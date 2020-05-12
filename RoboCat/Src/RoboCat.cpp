@@ -14,7 +14,9 @@ RoboCat::RoboCat() :
 	mThrustDir( sf::Vector2f(0.f, 0.f) ),
 	mPlayerId( 0 ),
 	mIsShooting( false ),
-	mHealth( 10 )
+	mIsEntered(false),
+	mHealth( 10 ),
+	mIsReadyToPlay(false)
 {
 	SetCollisionRadius( 20.f );
 }
@@ -42,10 +44,13 @@ void RoboCat::ProcessInput( float inDeltaTime, const InputState& inInputState )
 	//float inputForwardDelta = inInputState.GetDesiredVerticalDelta();
 	//mThrustDir = inputForwardDelta;
 
+
 	float inputHorizontalDelta = inInputState.GetDesiredHorizontalDelta();
 	mThrustDir.x = inputHorizontalDelta;
 	float inputForwardDelta = inInputState.GetDesiredVerticalDelta();
 	mThrustDir.y = -inputForwardDelta;
+
+	
 
 	
 	if (mThrustDir.x == 1 && mThrustDir.y == 1)
@@ -68,7 +73,12 @@ void RoboCat::ProcessInput( float inDeltaTime, const InputState& inInputState )
 	if (rot != -1)
 		SetRotation(rot);
 
-	mIsShooting = inInputState.IsShooting();
+	if (mIsReadyToPlay)
+	{
+		mIsShooting = inInputState.IsShooting();
+	}
+
+	mIsEntered = inInputState.IsEntered();
 }
 
 void RoboCat::AdjustVelocityByThrust( float inDeltaTime )
@@ -82,15 +92,19 @@ void RoboCat::AdjustVelocityByThrust( float inDeltaTime )
 
 void RoboCat::SimulateMovement( float inDeltaTime )
 {
-	//simulate us...
-	AdjustVelocityByThrust( inDeltaTime );
-	
-	// Replace with a "TryMove" that preemptively checks for collisions.
-	TryMove(mVelocity * inDeltaTime);
-	//SetLocation( GetLocation() + mVelocity * inDeltaTime );
+	//if (mIsReadyToPlay) 
+	//{
+		//simulate us...
+		if (mIsReadyToPlay)
+			AdjustVelocityByThrust(inDeltaTime);
 
-	// Will encompass the collisions with everything except the walls.
-	ProcessCollisions();
+		// Replace with a "TryMove" that preemptively checks for collisions.
+		TryMove(mVelocity * inDeltaTime);
+		//SetLocation( GetLocation() + mVelocity * inDeltaTime );
+
+		// Will encompass the collisions with everything except the walls.
+		ProcessCollisions();
+	//}
 }
 
 void RoboCat::Update()
@@ -288,4 +302,9 @@ uint32_t RoboCat::Write( OutputMemoryBitStream& inOutputStream, uint32_t inDirty
 	}
 
 	return writtenState;
+}
+
+void RoboCat::SetReadyToPlay(bool ready)
+{
+	mIsReadyToPlay = ready;
 }

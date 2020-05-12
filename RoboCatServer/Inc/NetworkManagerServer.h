@@ -19,9 +19,12 @@ public:
 			void			RespawnCats();
 
 			ClientProxyPtr	GetClientProxy( int inPlayerId ) const;
+			bool			GetAllPlayerReady() const { return mIsAllPlayerReady; }
 
 private:
 			NetworkManagerServer();
+
+			void	SendRespondTestPacket(ClientProxyPtr inClientProxy, InputMemoryBitStream& inInputStream);
 
 			void	HandlePacketFromNewClient( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress );
 			void	ProcessPacket( ClientProxyPtr inClientProxy, InputMemoryBitStream& inInputStream );
@@ -46,6 +49,7 @@ private:
 
 	AddressToClientMap		mAddressToClientMap;
 	IntToClientMap			mPlayerIdToClientMap;
+	IntToClientMap			mPlayerReady;
 
 	int				mNewPlayerId;
 	int				mNewNetworkId;
@@ -53,6 +57,7 @@ private:
 	float			mTimeOfLastSatePacket;
 	float			mTimeBetweenStatePackets;
 	float			mClientDisconnectTimeout;
+	bool			mIsAllPlayerReady;
 };
 
 

@@ -7,7 +7,8 @@ NetworkManagerServer::NetworkManagerServer() :
 	mNewPlayerId( 1 ),
 	mNewNetworkId( 1 ),
 	mTimeBetweenStatePackets( 0.033f ),
-	mClientDisconnectTimeout( 3.f )
+	mClientDisconnectTimeout( 3.f ),
+	mIsAllPlayerReady(false)
 {
 }
 
@@ -35,7 +36,8 @@ void NetworkManagerServer::ProcessPacket( InputMemoryBitStream& inInputStream, c
 	if( it == mAddressToClientMap.end() )
 	{
 		//didn't find one? it's a new cilent..is the a HELO? if so, create a client proxy...
-		HandlePacketFromNewClient( inInputStream, inFromAddress );
+		if(!mIsAllPlayerReady)
+			HandlePacketFromNewClient( inInputStream, inFromAddress );
 	}
 	else
 	{
@@ -64,12 +66,41 @@ void NetworkManagerServer::ProcessPacket( ClientProxyPtr inClientProxy, InputMem
 			HandleInputPacket( inClientProxy, inInputStream );
 		}
 		break;
+	case kTestCC:
+		SendRespondTestPacket(inClientProxy, inInputStream);
+		break;
 	default:
 		LOG( "Unknown packet type received from %s", inClientProxy->GetSocketAddress().ToString().c_str() );
 		break;
 	}
 }
 
+void NetworkManagerServer::SendRespondTestPacket(ClientProxyPtr inClientProxy, InputMemoryBitStream& inInputStream)
+{
+	OutputMemoryBitStream respondPacket;
+	uint32_t playerID;
+	inInputStream.Read(playerID);
+	//respondPacket.Write(inClientProxy->GetPlayerId());
+	if (mPlayerReady.find(playerID) == mPlayerReady.end())
+	{
+		LOG("Server getting test packet from client named: '%s' with player id: %d", inClientProxy->GetName().c_str(), inClientProxy->GetPlayerId());
+		mPlayerReady[playerID] = inClientProxy;
+		if (mPlayerReady.size() == mPlayerIdToClientMap.size())
+		{
+			respondPacket.Write(kRespondCC);
+
+			for (auto it = mPlayerReady.begin(), end = mPlayerReady.end(); it != end; ++it)
+			{
+				ClientProxyPtr clientProxy = it->second;
+				SendPacket(respondPacket, clientProxy->GetSocketAddress());
+				mIsAllPlayerReady = true;
+			}
+		}
+		
+	}
+
+	
+}
 
 void NetworkManagerServer::HandlePacketFromNewClient( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress )
 {

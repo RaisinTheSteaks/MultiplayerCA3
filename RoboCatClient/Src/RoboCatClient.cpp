@@ -3,9 +3,10 @@
 
 
 RoboCatClient::RoboCatClient() :
-	mTimeLocationBecameOutOfSync( 0.f ),
-	mTimeVelocityBecameOutOfSync( 0.f ),
-	m_textureIsDirty(true)
+	mTimeLocationBecameOutOfSync(0.f),
+	mTimeVelocityBecameOutOfSync(0.f),
+	m_textureIsDirty(true),
+	mIsPressedOnce(false)
 {
 	m_sprite.reset(new SFSpriteComponent(this));
 
@@ -28,6 +29,7 @@ void RoboCatClient::HandleDying()
 void RoboCatClient::Update()
 {
 	// Check if we need to set the texture.
+	
 	if (m_textureIsDirty)
 	{
 		m_sprite->SetTexture(PlayerTextureGenerator::sInstance->GetPlayerTexure(GetPlayerId()));
@@ -44,10 +46,24 @@ void RoboCatClient::Update()
 			float deltaTime = pendingMove->GetDeltaTime();
 			
 			//apply that input
-			
 			ProcessInput( deltaTime, pendingMove->GetInputState() );
 
 			//and simulate!
+			if (mIsEntered && !mIsPressedOnce)
+			{
+				NetworkManagerClient::sInstance->SetStateToTest();
+				mIsEntered = false;
+				mIsPressedOnce = true;
+			}
+
+			if (NetworkManagerClient::sInstance->GetNetworkState() == 4)
+			{
+				mIsReadyToPlay = true;
+				NetworkManagerClient::sInstance->SetStateToWelcomed();
+
+			}
+
+
 
 			SimulateMovement( deltaTime );
 			
