@@ -57,6 +57,13 @@ void RoboCatClient::Update()
 				mIsPressedOnce = true;
 			}
 
+			if (NetworkManagerClient::sInstance->GetNetworkState() == 4)
+			{
+				mIsReadyToPlay = true;
+				NetworkManagerClient::sInstance->SetStateToWelcomed();
+
+			}
+
 			SimulateMovement( deltaTime );
 			
 			//LOG( "Client Move Time: %3.4f deltaTime: %3.4f left rot at %3.4f", latestMove.GetTimestamp(), deltaTime, GetRotation() );

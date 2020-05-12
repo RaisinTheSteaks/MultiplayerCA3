@@ -13,6 +13,11 @@ void NetworkManagerClient::SetStateToTest()
 	mState = NCS_Test;
 }
 
+void NetworkManagerClient::SetStateToWelcomed()
+{
+	mState = NCS_Welcomed;
+}
+
 NetworkManagerClient::NetworkManagerClient() :
 	mState( NCS_Uninitialized ),
 	mDeliveryNotificationManager( true, false ),
@@ -55,7 +60,7 @@ void NetworkManagerClient::ProcessPacket( InputMemoryBitStream& inInputStream, c
 		break;
 	case kRespondCC:
 		LOG("'%s' got test packet back", mName.c_str());
-		mState = NCS_Welcomed;
+		mState = NCS_GameStart;
 		break;
 	}
 }

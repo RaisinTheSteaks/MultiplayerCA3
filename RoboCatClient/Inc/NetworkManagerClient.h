@@ -8,7 +8,8 @@ class NetworkManagerClient : public NetworkManager
 		NCS_Uninitialized,
 		NCS_SayingHello,
 		NCS_Welcomed,
-		NCS_Test
+		NCS_Test,
+		NCS_GameStart
 	};
 
 public:
@@ -25,6 +26,8 @@ public:
 			int		GetPlayerId()											const	{ return mPlayerId; }
 			float	GetLastMoveProcessedByServerTimestamp()					const	{ return mLastMoveProcessedByServerTimestamp; }
 			void	SetStateToTest();
+			void	SetStateToWelcomed();
+			NetworkClientState GetNetworkState()							const { return mState; }
 private:
 			NetworkManagerClient();
 			void Init( const SocketAddress& inServerAddress, const string& inName );
