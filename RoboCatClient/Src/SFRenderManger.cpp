@@ -16,21 +16,26 @@ void SFRenderManager::RenderUI()
 {
 	sf::Font bebas = *FontManager::sInstance->GetFont("bebas");
 
-	sf::Text RTT, InOut;
+	sf::Text RTT, InOut, Ready;
 
 	sf::Vector2f basePos(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2);
 
 	RTT.setPosition(basePos.x + 20, basePos.y + 20);
 	InOut.setPosition(basePos.x + 120, basePos.y + 20);
+	Ready.setPosition(basePos.x + 700, basePos.y + 20);
 
 	RTT.setFont(bebas);
 	InOut.setFont(bebas);
+	Ready.setFont(bebas);
 
 	RTT.setCharacterSize(24);
 	InOut.setCharacterSize(24);
+	Ready.setCharacterSize(24);
 	
 	RTT.setFillColor(sf::Color::Red);
 	InOut.setFillColor(sf::Color::Red);
+	
+
 	
 	// RTT
 	float rttMS = NetworkManagerClient::sInstance->GetAvgRoundTripTime().GetValue() * 1000.f;
@@ -43,6 +48,30 @@ void SFRenderManager::RenderUI()
 		static_cast< int >(NetworkManagerClient::sInstance->GetBytesSentPerSecond().GetValue()));
 
 	InOut.setString(bandwidth);
+
+	sf::Color readyColor;
+	string readyText;
+
+	
+	if (!GetIsGameStarted())
+	{
+		if (!GetIsPlayerReady())
+		{
+			readyColor = sf::Color::Red;
+			readyText = "Not Ready";
+		}
+		else
+		{
+			readyColor = sf::Color::Green;
+			readyText = "Ready";
+		}
+
+		Ready.setFillColor(readyColor);
+		Ready.setString(readyText);
+		SFWindowManager::sInstance->draw(Ready);
+
+	}
+			
 
 	// Draw the text to screen.
 	SFWindowManager::sInstance->draw(RTT);
@@ -99,6 +128,46 @@ void SFRenderManager::RenderTexturedWorld()
 	{
 		SFWindowManager::sInstance->draw(spr);
 	}
+}
+
+bool SFRenderManager::GetIsGameStarted()
+{
+	uint32_t catID = (uint32_t)'RCAT';
+	for (auto obj : World::sInstance->GetGameObjects())
+	{
+		// Find a cat.
+		if (obj->GetClassId() == catID)
+		{
+			RoboCat* cat = dynamic_cast<RoboCat*>(obj.get());
+			auto id = cat->GetPlayerId();
+			auto ourID = NetworkManagerClient::sInstance->GetPlayerId();
+			if (id == ourID)
+			{
+				return cat->GetReadyToPlay();
+			}
+		}
+	}
+	return false;
+}
+
+bool SFRenderManager::GetIsPlayerReady()
+{
+	uint32_t catID = (uint32_t)'RCAT';
+	for (auto obj : World::sInstance->GetGameObjects())
+	{
+		// Find a cat.
+		if (obj->GetClassId() == catID)
+		{
+			RoboCat* cat = dynamic_cast<RoboCat*>(obj.get());
+			auto id = cat->GetPlayerId();
+			auto ourID = NetworkManagerClient::sInstance->GetPlayerId();
+			if (id == ourID)
+			{
+				return cat->GetIsPlayerReady();
+			}
+		}
+	}
+	return false;
 }
 
 // Way of finding this clients cat, and then centre point. - Ronan

@@ -328,6 +328,7 @@ void NetworkManagerServer::HandleClientDisconnected( ClientProxyPtr inClientProx
 {
 	mPlayerIdToClientMap.erase( inClientProxy->GetPlayerId() );
 	mAddressToClientMap.erase( inClientProxy->GetSocketAddress() );
+	mPlayerReady.erase(inClientProxy->GetPlayerId());
 	static_cast< Server* > ( Engine::sInstance.get() )->HandleLostClient( inClientProxy );
 
 	//was that the last client? if so, bye!

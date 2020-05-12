@@ -27,6 +27,8 @@ private:
 	void UpdateView();
 	void RenderTexturedWorld();
 
+	bool GetIsGameStarted();
+	bool GetIsPlayerReady();
 	uint8_t FindCatHealth();
 	sf::Vector2f NumberofAliveCats();
 
