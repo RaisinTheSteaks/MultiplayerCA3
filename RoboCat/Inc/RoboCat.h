@@ -37,6 +37,8 @@ public:
 
 	virtual uint32_t	Write( OutputMemoryBitStream& inOutputStream, uint32_t inDirtyState ) const override;
 
+	void SetReadyToPlay(bool ready);
+
 protected:
 	RoboCat();
 
@@ -72,7 +74,7 @@ protected:
 	bool				mIsShooting;
 	bool				mIsEntered;
 
-	
+	bool				mIsReadyToPlay;
 
 
 
