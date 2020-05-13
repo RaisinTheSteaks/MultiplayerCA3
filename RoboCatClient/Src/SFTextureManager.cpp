@@ -16,6 +16,7 @@ SFTextureManager::SFTextureManager()
 	CacheTexture("tile", "../Assets/tile.png");
 	CacheTexture("wood", "../Assets/wood.png");
 	CacheTexture("stone", "../Assets/stone.png");
+	CacheTexture("island", "../Assets/stoneIsland.png");
 	CacheTexture("grass", "../Assets/grass.png");
 	CacheTexture("water", "../Assets/water.png");
 	CacheTexture("start_screen", "../Assets/start_screen.png");
