@@ -56,6 +56,8 @@ void SFRenderManager::ReadInScore()
 	{
 		scoreFile.close();
 		scoreString = "Unable to open score file";
+		//std::ostream newFile("../Assets/WLA_Scoresheet.txt");
+
 	}
 }
 
@@ -153,6 +155,59 @@ void SFRenderManager::RenderTexturedWorld()
 	for (auto spr : TexturedWorld::sInstance->getTexturedWorld())
 	{
 		SFWindowManager::sInstance->draw(spr);
+	}
+}
+
+void SFRenderManager::UpdateWinRate(bool winLose)
+{
+	std::ifstream scoreFile("../Assets/WLA_Scoresheet.txt");
+	if (scoreFile.is_open())
+	{
+		string line = "";
+		float win = 0.f;
+		float lose = 0.f;
+		float avg = 0.f;
+		for (int i = 0; i < 3; i++)
+		{
+			std::getline(scoreFile, line);
+			if (line != "")
+			{
+				if (i == 0)
+					win = std::stof(line);
+
+				if (i == 1)
+					lose = std::stof(line);
+
+				if (i == 2)
+					avg = std::stof(line);
+			}
+			else
+			{
+				std::cout << "NULL LINE: " << i << std::endl;
+			}
+		}
+
+		if (winLose)
+		{
+			win++;
+		}
+		else
+		{
+			lose++;
+		}
+		
+		float total = win + lose;
+		avg = (win / total);
+		scoreFile.close();
+
+		std::ofstream out("../Assets/WLA_Scoresheet.txt", std::ios::out | std::ios::trunc);
+		out << win << "\n" << lose << "\n" << avg << "\n";
+		out.close();
+	}
+	else
+	{
+		scoreFile.close();
+		std::cout << "Unable to open score file" << std::endl;
 	}
 }
 
@@ -306,13 +361,21 @@ void SFRenderManager::Render()
 			sf::Vector2f died(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2);
 			m_diedScreen.setPosition(died);
 			SFWindowManager::sInstance->draw(m_diedScreen);
+			if (!addedScore)
+			{
+				addedScore = true;
+				UpdateWinRate(false);
+			}
 		}
 		else
 		{
 			// We are the last man standing.
 			sf::Vector2f cats = NumberofAliveCats();
-
-			
+			if (!addedScore)
+			{
+				addedScore = true;
+				UpdateWinRate(true);
+			}
 			if (cats.x == 1.f && FindCatHealth() > 0 && 
 				ScoreBoardManager::sInstance->GetEntry(NetworkManagerClient::sInstance->GetPlayerId())->GetScore() > 0)
 			{
