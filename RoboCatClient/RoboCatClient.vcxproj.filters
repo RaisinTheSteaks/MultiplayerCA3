@@ -123,9 +123,4 @@
       <Filter>Inc</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="WLA_Scoresheet.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-  </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 #include <RoboCatClientPCH.h>
-
+#include <sstream>
 std::unique_ptr< SFRenderManager >	SFRenderManager::sInstance;
 
 SFRenderManager::SFRenderManager()
@@ -10,27 +10,78 @@ SFRenderManager::SFRenderManager()
 	m_startScreen.setTexture(*SFTextureManager::sInstance->GetTexture("start_screen"));
 	m_diedScreen.setTexture(*SFTextureManager::sInstance->GetTexture("died_screen"));
 	m_winnerScreen.setTexture(*SFTextureManager::sInstance->GetTexture("winner_screen"));
+	ReadInScore();
+
+}
+
+void SFRenderManager::ReadInScore()
+{
+
+	std::ifstream scoreFile("../Assets/WLA_Scoresheet.txt");
+	if (scoreFile.is_open())
+	{
+		string line = "";
+		float win = 0.f;
+		float lose = 0.f;
+		float avg = 0.f;
+		for (int i = 0; i < 3; i++)
+		{
+			std::getline(scoreFile, line);
+			if (line != "")
+			{
+				if (i == 0)
+					win = std::stof(line);
+
+				if (i == 1)
+					lose = std::stof(line);
+
+				if (i == 2)
+					avg = std::stof(line);
+			}
+			else
+			{
+				std::cout << "NULL LINE: " << i << std::endl;
+			}
+		}
+		std::ostringstream ss;
+		ss << "Win:";
+		ss << win;
+		ss << "\nLose:";
+		ss << lose;
+		ss << "\nWin Rate:";
+		ss << avg;
+		scoreString = (ss.str());
+	}
+	else
+	{
+		scoreFile.close();
+		scoreString = "Unable to open score file";
+	}
 }
 
 void SFRenderManager::RenderUI()
 {
 	sf::Font bebas = *FontManager::sInstance->GetFont("bebas");
 
-	sf::Text RTT, InOut;
+	sf::Text RTT, InOut, Score;
 
 	sf::Vector2f basePos(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2);
 
 	RTT.setPosition(basePos.x + 20, basePos.y + 20);
 	InOut.setPosition(basePos.x + 120, basePos.y + 20);
+	Score.setPosition(basePos.x + 20, basePos.y + 50);
 
 	RTT.setFont(bebas);
 	InOut.setFont(bebas);
+	Score.setFont(bebas);
 
 	RTT.setCharacterSize(24);
 	InOut.setCharacterSize(24);
+	Score.setCharacterSize(24);
 	
 	RTT.setFillColor(sf::Color::Red);
 	InOut.setFillColor(sf::Color::Red);
+	Score.setFillColor(sf::Color::Green);
 	
 	// RTT
 	float rttMS = NetworkManagerClient::sInstance->GetAvgRoundTripTime().GetValue() * 1000.f;
@@ -44,9 +95,13 @@ void SFRenderManager::RenderUI()
 
 	InOut.setString(bandwidth);
 
+	//Score
+	Score.setString(scoreString);
+
 	// Draw the text to screen.
 	SFWindowManager::sInstance->draw(RTT);
 	SFWindowManager::sInstance->draw(InOut);
+	SFWindowManager::sInstance->draw(Score);
 }
 
 void SFRenderManager::RenderShadows()
@@ -170,7 +225,6 @@ void SFRenderManager::StaticInit()
 {
 	sInstance.reset(new SFRenderManager());
 }
-
 
 void SFRenderManager::AddComponent(SFSpriteComponent* inComponent)
 {

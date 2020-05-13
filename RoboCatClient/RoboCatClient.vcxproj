@@ -58,9 +58,6 @@
     <ClInclude Include="Inc\MouseClient.h" />
     <ClInclude Include="Inc\RoboCatClientPCH.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="WLA_Scoresheet.txt" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5B4C5E90-6135-4E28-8545-FF1CAF5E4971}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

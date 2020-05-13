@@ -22,6 +22,8 @@ private:
 
 	SFRenderManager();
 
+	void ReadInScore();
+
 	void RenderUI();
 	void RenderShadows();
 	void UpdateView();
@@ -29,6 +31,8 @@ private:
 
 	uint8_t FindCatHealth();
 	sf::Vector2f NumberofAliveCats();
+
+	string scoreString;
 
 	//this can't be only place that holds on to component- it has to live inside a GameObject in the world
 	vector< SFSpriteComponent* > mComponents;
