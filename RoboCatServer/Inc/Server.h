@@ -23,6 +23,14 @@ private:
 	void	PickupUpdate();
 	void	SetupWorld();
 
-	std::vector<Vector3> m_spawnPoints;
+	struct SpawnPoint
+	{
+		SpawnPoint(Vector3 position, int playerId);
+
+		Vector3 position;
+		int playerId;
+	};
+
+	std::vector<SpawnPoint> m_spawnPoints;
 
 };

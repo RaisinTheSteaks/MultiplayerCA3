@@ -53,6 +53,7 @@ void RoboCatClient::Update()
 			{
 				NetworkManagerClient::sInstance->SetStateToTest();
 				mIsEntered = false;
+				mLocalPlayerReady = true;
 				mIsPressedOnce = true;
 			}
 

@@ -38,6 +38,9 @@ public:
 	virtual uint32_t	Write( OutputMemoryBitStream& inOutputStream, uint32_t inDirtyState ) const override;
 
 	void SetReadyToPlay(bool ready);
+	bool GetReadyToPlay() const { return mIsReadyToPlay; }
+	bool GetIsPlayerReady() const { return mLocalPlayerReady; }
+
 
 protected:
 	RoboCat();
@@ -75,6 +78,8 @@ protected:
 	bool				mIsEntered;
 
 	bool				mIsReadyToPlay;
+	bool				mLocalPlayerReady;
+
 
 
 
