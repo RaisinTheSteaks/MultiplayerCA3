@@ -28,7 +28,7 @@ private:
 
 			void	HandlePacketFromNewClient( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress );
 			void	ProcessPacket( ClientProxyPtr inClientProxy, InputMemoryBitStream& inInputStream );
-			
+			void	NotifyPlayerCount(ClientProxyPtr inClientProxy);
 			void	SendWelcomePacket( ClientProxyPtr inClientProxy );
 			void	UpdateAllClients();
 			
