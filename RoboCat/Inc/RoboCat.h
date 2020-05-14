@@ -41,8 +41,8 @@ public:
 	bool				GetReadyToPlay()		const { return mIsReadyToPlay; }
 	bool				GetIsPlayerReady()		const { return mLocalPlayerReady; }
 
-	bool				GetShootRight()				{ return mIsShootingRight; }
-	bool				GetShootLeft()				{ return mIsShootingLeft; }
+	bool				GetShootRight()				{ return mIsShootRight; }
+	bool				GetShootLeft()				{ return mIsShootLeft; }
 protected:
 	RoboCat();
 
@@ -76,13 +76,15 @@ protected:
 	uint8_t				mHealth;
 
 	bool				mIsShooting;
+	bool				mIsShootLeft;
+	bool				mIsShootRight;
 	bool				mIsEntered;
+
 
 	bool				mIsReadyToPlay;
 	bool				mLocalPlayerReady;
 
-	bool				mIsShootingLeft;
-	bool				mIsShootingRight;
+	
 
 
 };

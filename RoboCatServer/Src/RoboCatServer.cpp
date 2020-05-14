@@ -1,10 +1,13 @@
 #include <RoboCatServerPCH.h>
 
 RoboCatServer::RoboCatServer() :
-	mCatControlType( ESCT_Human ),
-	mTimeOfNextShot( 0.f ),
-	mTimeBetweenShots( 0.2f )
-{}
+	mCatControlType(ESCT_Human),
+	mTimeOfNextShot(0.f),
+	mTimeBetweenShots(0.2f)
+{
+	mIsShootLeft = false;
+	mIsShootRight = false;
+}
 
 void RoboCatServer::HandleDying()
 {
@@ -69,6 +72,8 @@ void RoboCatServer::Update()
 void RoboCatServer::HandleShooting()
 {
 	float time = Timing::sInstance.GetFrameStartTime();
+	if (mIsShootRight || mIsShootLeft)
+		int x = 10;
 	if( mIsShooting && Timing::sInstance.GetFrameStartTime() > mTimeOfNextShot )
 	{
 		//not exact, but okay

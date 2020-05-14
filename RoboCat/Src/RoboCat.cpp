@@ -15,8 +15,10 @@ RoboCat::RoboCat() :
 	mPlayerId( 0 ),
 	mIsShooting( false ),
 	mIsEntered(false),
-	mHealth( 10 ),
-	mIsReadyToPlay(false)
+	mIsShootLeft(false),
+	mIsShootRight(false),
+	mIsReadyToPlay(false),
+	mHealth( 10 )
 {
 	SetCollisionRadius( 20.f );
 }
@@ -76,11 +78,14 @@ void RoboCat::ProcessInput( float inDeltaTime, const InputState& inInputState )
 	if (mIsReadyToPlay)
 	{
 		mIsShooting = inInputState.IsShooting();
-		mIsShootingLeft = inInputState.IsShootingLeft();
-		mIsShootingRight = inInputState.IsShootingRight();
+		mIsShootLeft = inInputState.IsShootingLeft();
+		mIsShootRight = inInputState.IsShootingRight();
+		
 	}
 
 	mIsEntered = inInputState.IsEntered();
+	
+
 }
 
 void RoboCat::AdjustVelocityByThrust( float inDeltaTime )

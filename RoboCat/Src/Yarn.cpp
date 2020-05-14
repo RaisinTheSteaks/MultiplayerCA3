@@ -88,8 +88,9 @@ void Yarn::InitFromShooter( RoboCat* inShooter )
 	SetPlayerId( inShooter->GetPlayerId() );
 	
 	bool shootLeft = false;
-	shootLeft = inShooter->GetShootLeft();
 	bool shootRight = false;
+	shootLeft = inShooter->GetShootLeft();
+	
 	shootRight = inShooter->GetShootRight();
 
 
