@@ -51,7 +51,7 @@ bool TexturedWorld::loadSprites()
 			}
 			else if (texWorld.getPixel(i, j) == sf::Color::Black)
 			{
-				spr.setTexture(*SFTextureManager::sInstance->GetTexture("wood"));
+				spr.setTexture(*SFTextureManager::sInstance->GetTexture("island"));
 				spr.setPosition(i * tileSize, j * tileSize);
 				m_spriteTiles.push_back(spr);
 			}
