@@ -17,7 +17,7 @@ SFRenderManager::SFRenderManager()
 void SFRenderManager::ReadInScore()
 {
 
-	std::ifstream scoreFile("../Assets/WLA_Scoresheet.txt");
+	std::ifstream scoreFile("../Assets/Saved/WLA_Scoresheet.txt");
 	if (scoreFile.is_open())
 	{
 		string line = "";
@@ -40,7 +40,7 @@ void SFRenderManager::ReadInScore()
 			}
 			else
 			{
-				std::cout << "NULL LINE: " << i << std::endl;
+				std::cout << "First Game " << std::endl;
 			}
 		}
 		std::ostringstream ss;
@@ -50,6 +50,7 @@ void SFRenderManager::ReadInScore()
 		ss << lose;
 		ss << "\nWin Rate:";
 		ss << avg;
+		ss << "%";
 		scoreString = (ss.str());
 	}
 	else
@@ -160,13 +161,13 @@ void SFRenderManager::RenderTexturedWorld()
 
 void SFRenderManager::UpdateWinRate(bool winLose)
 {
-	std::ifstream scoreFile("../Assets/WLA_Scoresheet.txt");
+	std::ifstream scoreFile("../Assets/Saved/WLA_Scoresheet.txt");
 	if (scoreFile.is_open())
 	{
 		string line = "";
 		float win = 0.f;
 		float lose = 0.f;
-		float avg = 0.f;
+		float avg = 0.00f;
 		for (int i = 0; i < 3; i++)
 		{
 			std::getline(scoreFile, line);
@@ -187,7 +188,7 @@ void SFRenderManager::UpdateWinRate(bool winLose)
 			}
 		}
 
-		if (winLose)
+		if (winLose == true)
 		{
 			win++;
 		}
@@ -197,10 +198,10 @@ void SFRenderManager::UpdateWinRate(bool winLose)
 		}
 		
 		float total = win + lose;
-		avg = (win / total);
+		avg = (win / total) * 100.00f;
 		scoreFile.close();
 
-		std::ofstream out("../Assets/WLA_Scoresheet.txt", std::ios::out | std::ios::trunc);
+		std::ofstream out("../Assets/Saved/WLA_Scoresheet.txt", std::ios::out | std::ios::trunc);
 		out << win << "\n" << lose << "\n" << avg << "\n";
 		out.close();
 	}
@@ -371,14 +372,15 @@ void SFRenderManager::Render()
 		{
 			// We are the last man standing.
 			sf::Vector2f cats = NumberofAliveCats();
-			if (!addedScore)
-			{
-				addedScore = true;
-				UpdateWinRate(true);
-			}
+			
 			if (cats.x == 1.f && FindCatHealth() > 0 && 
 				ScoreBoardManager::sInstance->GetEntry(NetworkManagerClient::sInstance->GetPlayerId())->GetScore() > 0)
 			{
+				if (!addedScore)
+				{
+					addedScore = true;
+					UpdateWinRate(true);
+				}
 				// Draw some you are the winner screen.
 				sf::Vector2f winner(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2);
 				m_winnerScreen.setPosition(winner);
