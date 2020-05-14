@@ -1,5 +1,5 @@
 #include <RoboCatClientPCH.h>
-
+#include <sstream>
 std::unique_ptr< SFRenderManager >	SFRenderManager::sInstance;
 
 SFRenderManager::SFRenderManager()
@@ -10,18 +10,77 @@ SFRenderManager::SFRenderManager()
 	m_startScreen.setTexture(*SFTextureManager::sInstance->GetTexture("start_screen"));
 	m_diedScreen.setTexture(*SFTextureManager::sInstance->GetTexture("died_screen"));
 	m_winnerScreen.setTexture(*SFTextureManager::sInstance->GetTexture("winner_screen"));
+	ReadInScore();
+
+}
+
+void SFRenderManager::ReadInScore()
+{
+
+	std::ifstream scoreFile("../Assets/Saved/WLA_Scoresheet.txt");
+	if (scoreFile.is_open())
+	{
+		string line = "";
+		float win = 0.f;
+		float lose = 0.f;
+		float avg = 0.f;
+		for (int i = 0; i < 3; i++)
+		{
+			std::getline(scoreFile, line);
+			if (line != "")
+			{
+				if (i == 0)
+					win = std::stof(line);
+
+				if (i == 1)
+					lose = std::stof(line);
+
+				if (i == 2)
+					avg = std::stof(line);
+			}
+			else
+			{
+				std::cout << "First Game " << std::endl;
+			}
+		}
+		std::ostringstream ss;
+		ss << "Win:";
+		ss << win;
+		ss << "\nLose:";
+		ss << lose;
+		ss << "\nWin Rate:";
+		ss << avg;
+		ss << "%";
+		scoreString = (ss.str());
+	}
+	else
+	{
+		scoreFile.close();
+		scoreString = "Unable to open score file";
+		//std::ostream newFile("../Assets/WLA_Scoresheet.txt");
+
+	}
 }
 
 void SFRenderManager::RenderUI()
 {
 	sf::Font bebas = *FontManager::sInstance->GetFont("bebas");
 
-	sf::Text RTT, InOut, Ready;
+	sf::Text RTT, InOut, Score, Ready;
 
 	sf::Vector2f basePos(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2);
 
 	RTT.setPosition(basePos.x + 20, basePos.y + 20);
 	InOut.setPosition(basePos.x + 120, basePos.y + 20);
+	Score.setPosition(basePos.x + 20, basePos.y + 50);
+
+	RTT.setFont(bebas);
+	InOut.setFont(bebas);
+	Score.setFont(bebas);
+
+	RTT.setCharacterSize(24);
+	InOut.setCharacterSize(24);
+	Score.setCharacterSize(24);
 	Ready.setPosition(basePos.x + 700, basePos.y + 20);
 
 	RTT.setFont(bebas);
@@ -34,6 +93,7 @@ void SFRenderManager::RenderUI()
 	
 	RTT.setFillColor(sf::Color::Red);
 	InOut.setFillColor(sf::Color::Red);
+	Score.setFillColor(sf::Color::Green);
 	
 
 	
@@ -49,6 +109,8 @@ void SFRenderManager::RenderUI()
 
 	InOut.setString(bandwidth);
 
+	//Score
+	Score.setString(scoreString);
 	sf::Color readyColor;
 	string readyText;
 
@@ -76,6 +138,7 @@ void SFRenderManager::RenderUI()
 	// Draw the text to screen.
 	SFWindowManager::sInstance->draw(RTT);
 	SFWindowManager::sInstance->draw(InOut);
+	SFWindowManager::sInstance->draw(Score);
 }
 
 void SFRenderManager::RenderShadows()
@@ -130,6 +193,58 @@ void SFRenderManager::RenderTexturedWorld()
 	}
 }
 
+void SFRenderManager::UpdateWinRate(bool winLose)
+{
+	std::ifstream scoreFile("../Assets/Saved/WLA_Scoresheet.txt");
+	if (scoreFile.is_open())
+	{
+		string line = "";
+		float win = 0.f;
+		float lose = 0.f;
+		float avg = 0.00f;
+		for (int i = 0; i < 3; i++)
+		{
+			std::getline(scoreFile, line);
+			if (line != "")
+			{
+				if (i == 0)
+					win = std::stof(line);
+
+				if (i == 1)
+					lose = std::stof(line);
+
+				if (i == 2)
+					avg = std::stof(line);
+			}
+			else
+			{
+				std::cout << "NULL LINE: " << i << std::endl;
+			}
+		}
+
+		if (winLose == true)
+		{
+			win++;
+		}
+		else
+		{
+			lose++;
+		}
+		
+		float total = win + lose;
+		avg = (win / total) * 100.00f;
+		scoreFile.close();
+
+		std::ofstream out("../Assets/Saved/WLA_Scoresheet.txt", std::ios::out | std::ios::trunc);
+		out << win << "\n" << lose << "\n" << avg << "\n";
+		out.close();
+	}
+	else
+	{
+		scoreFile.close();
+		std::cout << "Unable to open score file" << std::endl;
+	}
+}
 bool SFRenderManager::GetIsGameStarted()
 {
 	uint32_t catID = (uint32_t)'RCAT';
@@ -240,7 +355,6 @@ void SFRenderManager::StaticInit()
 	sInstance.reset(new SFRenderManager());
 }
 
-
 void SFRenderManager::AddComponent(SFSpriteComponent* inComponent)
 {
 	mComponents.push_back(inComponent);
@@ -321,16 +435,25 @@ void SFRenderManager::Render()
 			sf::Vector2f died(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2);
 			m_diedScreen.setPosition(died);
 			SFWindowManager::sInstance->draw(m_diedScreen);
+			if (!addedScore)
+			{
+				addedScore = true;
+				UpdateWinRate(false);
+			}
 		}
 		else
 		{
 			// We are the last man standing.
 			sf::Vector2f cats = NumberofAliveCats();
-
 			
 			if (cats.x == 1.f && FindCatHealth() > 0 && 
 				ScoreBoardManager::sInstance->GetEntry(NetworkManagerClient::sInstance->GetPlayerId())->GetScore() > 0)
 			{
+				if (!addedScore)
+				{
+					addedScore = true;
+					UpdateWinRate(true);
+				}
 				// Draw some you are the winner screen.
 				sf::Vector2f winner(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2);
 				m_winnerScreen.setPosition(winner);

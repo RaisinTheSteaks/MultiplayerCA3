@@ -1,5 +1,6 @@
 #include <RoboCatClientPCH.h>
-
+#include <iostream>
+#include <fstream>
 
 
 RoboCatClient::RoboCatClient() :
@@ -190,9 +191,6 @@ void RoboCatClient::Read( InputMemoryBitStream& inInputStream )
 
 	
 }
-
-
-
 
 void RoboCatClient::DoClientSidePredictionAfterReplicationForLocalCat( uint32_t inReadState )
 {

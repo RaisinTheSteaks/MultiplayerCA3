@@ -6,7 +6,11 @@ public:
 	virtual void Update();
 	virtual void	HandleDying() override;
 
+	void UpdateWinRate();
+
 	virtual void	Read( InputMemoryBitStream& inInputStream ) override;
+
+	static void ReadInScore();
 
 	void DoClientSidePredictionAfterReplicationForLocalCat( uint32_t inReadState );
 	void DoClientSidePredictionAfterReplicationForRemoteCat( uint32_t inReadState );

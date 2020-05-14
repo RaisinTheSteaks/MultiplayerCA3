@@ -20,7 +20,11 @@ public:
 
 private:
 
+	void UpdateWinRate(bool winLose);
+
 	SFRenderManager();
+
+	void ReadInScore();
 
 	void RenderUI();
 	void RenderShadows();
@@ -31,6 +35,10 @@ private:
 	bool GetIsPlayerReady();
 	uint8_t FindCatHealth();
 	sf::Vector2f NumberofAliveCats();
+
+	string scoreString;
+
+	bool addedScore = 0;
 
 	//this can't be only place that holds on to component- it has to live inside a GameObject in the world
 	vector< SFSpriteComponent* > mComponents;
