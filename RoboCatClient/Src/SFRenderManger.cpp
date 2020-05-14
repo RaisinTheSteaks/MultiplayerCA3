@@ -262,6 +262,7 @@ void SFRenderManager::UpdateWinRate(bool winLose)
 		std::cout << "Unable to open score file" << std::endl;
 	}
 }
+
 bool SFRenderManager::GetIsGameStarted()
 {
 	uint32_t catID = (uint32_t)'RCAT';
@@ -472,7 +473,8 @@ void SFRenderManager::Render()
 					UpdateWinRate(true);
 				}
 				// Draw some you are the winner screen.
-				sf::Vector2f winner(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2);
+				sf::Vector2f winner(view.getCenter().x - view.getSize().x / 2, view.getCenter().y
+					- view.getSize().y / 2);
 				m_winnerScreen.setPosition(winner);
 				SFWindowManager::sInstance->draw(m_winnerScreen);
 			}

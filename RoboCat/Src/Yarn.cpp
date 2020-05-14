@@ -87,12 +87,28 @@ void Yarn::InitFromShooter( RoboCat* inShooter )
 	SetColor( inShooter->GetColor() );
 	SetPlayerId( inShooter->GetPlayerId() );
 	
+	bool shootLeft = false;
+	shootLeft = inShooter->GetShootLeft();
+	bool shootRight = false;
+	shootRight = inShooter->GetShootRight();
+
 
 	Vector3 forward = inShooter->GetForwardVector();
 	Vector3 vel = inShooter->GetVelocity();
 	auto normVel = thor::unitVector(sf::Vector2f(vel.mX, vel.mY));
 	sf::Vector2f temp = sf::Vector2f(0, -1);
-	thor::rotate(temp, inShooter->GetRotation());
+	
+	float rot = inShooter->GetRotation();
+	if (shootLeft)
+	{
+		rot += 90.f;
+	}
+	else if (shootRight)
+	{
+		rot += 270.f;
+	}
+
+	thor::rotate(temp, rot);
 
 	//SetVelocity(Vector3(normVel.x, normVel.y, 0) * mMuzzleSpeed);
 	

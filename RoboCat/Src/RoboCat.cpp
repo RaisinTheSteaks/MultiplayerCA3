@@ -76,6 +76,8 @@ void RoboCat::ProcessInput( float inDeltaTime, const InputState& inInputState )
 	if (mIsReadyToPlay)
 	{
 		mIsShooting = inInputState.IsShooting();
+		mIsShootingLeft = inInputState.IsShootingLeft();
+		mIsShootingRight = inInputState.IsShootingRight();
 	}
 
 	mIsEntered = inInputState.IsEntered();

@@ -19,7 +19,7 @@ SFTextureManager::SFTextureManager()
 	CacheTexture("island", "../Assets/stoneIsland.png");
 	CacheTexture("grass", "../Assets/grass.png");
 	CacheTexture("water", "../Assets/water.png");
-	CacheTexture("start_screen", "../Assets/start_screen.png");
+	CacheTexture("start_screen", "../Assets/triremeBackground_002.png");
 	CacheTexture("died_screen", "../Assets/died_screen.png");
 	CacheTexture("winner_screen", "../Assets/winner_screen.png");
 

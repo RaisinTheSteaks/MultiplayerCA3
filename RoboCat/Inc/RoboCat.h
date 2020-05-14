@@ -16,41 +16,42 @@ public:
 
 	static	GameObject*	StaticCreate()			{ return new RoboCat(); }
 
-	virtual uint32_t GetAllStateMask()	const override	{ return ECRS_AllState; }
+	virtual uint32_t	GetAllStateMask()	const override	{ return ECRS_AllState; }
 
 	virtual	RoboCat*	GetAsCat()	{ return this; }
 
-	virtual void Update()	override;
+	virtual void		Update()	override;
 
-	void ProcessInput( float inDeltaTime, const InputState& inInputState );
-	void SimulateMovement( float inDeltaTime );
+	void				ProcessInput( float inDeltaTime, const InputState& inInputState );
+	void				SimulateMovement( float inDeltaTime );
 
-	void ProcessCollisions();
+	void				ProcessCollisions();
 
-	void		SetPlayerId( uint32_t inPlayerId )			{ mPlayerId = inPlayerId; }
-	uint32_t	GetPlayerId()						const 	{ return mPlayerId; }
+	void				SetPlayerId( uint32_t inPlayerId )			{ mPlayerId = inPlayerId; }
+	uint32_t			GetPlayerId()						const 	{ return mPlayerId; }
 
-	void			SetVelocity( const Vector3& inVelocity )	{ mVelocity = inVelocity; }
-	const Vector3&	GetVelocity()						const	{ return mVelocity; }
+	void				SetVelocity( const Vector3& inVelocity )	{ mVelocity = inVelocity; }
+	const Vector3&		GetVelocity()						const	{ return mVelocity; }
 
-	uint8_t& GetHealth() { return mHealth; };
+	uint8_t&			GetHealth() { return mHealth; };
 
 	virtual uint32_t	Write( OutputMemoryBitStream& inOutputStream, uint32_t inDirtyState ) const override;
 
-	void SetReadyToPlay(bool ready);
-	bool GetReadyToPlay() const { return mIsReadyToPlay; }
-	bool GetIsPlayerReady() const { return mLocalPlayerReady; }
+	void				SetReadyToPlay(bool ready);
+	bool				GetReadyToPlay()		const { return mIsReadyToPlay; }
+	bool				GetIsPlayerReady()		const { return mLocalPlayerReady; }
 
-
+	bool				GetShootRight()				{ return mIsShootingRight; }
+	bool				GetShootLeft()				{ return mIsShootingLeft; }
 protected:
 	RoboCat();
 
 private:
 
-	void TryMove(Vector3 p_move);
+	void				TryMove(Vector3 p_move);
 
 
-	void	AdjustVelocityByThrust( float inDeltaTime );
+	void				AdjustVelocityByThrust( float inDeltaTime );
 
 	Vector3				mVelocity;
 
@@ -72,7 +73,7 @@ protected:
 	float				mLastMoveTimestamp;
 
 	sf::Vector2f		mThrustDir;
-	uint8_t					mHealth;
+	uint8_t				mHealth;
 
 	bool				mIsShooting;
 	bool				mIsEntered;
@@ -80,7 +81,8 @@ protected:
 	bool				mIsReadyToPlay;
 	bool				mLocalPlayerReady;
 
-
+	bool				mIsShootingLeft;
+	bool				mIsShootingRight;
 
 
 };
