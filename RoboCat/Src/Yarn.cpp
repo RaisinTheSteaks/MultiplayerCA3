@@ -90,21 +90,21 @@ void Yarn::InitFromShooter( RoboCat* inShooter )
 	bool shootLeft = false;
 	bool shootRight = false;
 	shootLeft = inShooter->GetShootLeft();
-	
 	shootRight = inShooter->GetShootRight();
 
 
-	Vector3 forward = inShooter->GetForwardVector();
+	//Vector3 forward = inShooter->GetForwardVector();
 	Vector3 vel = inShooter->GetVelocity();
 	auto normVel = thor::unitVector(sf::Vector2f(vel.mX, vel.mY));
 	sf::Vector2f temp = sf::Vector2f(0, -1);
 	
 	float rot = inShooter->GetRotation();
-	if (shootLeft)
+	if (shootRight)
 	{
+		//forward = inShooter->Get
 		rot += 90.f;
 	}
-	else if (shootRight)
+	else if (shootLeft)
 	{
 		rot += 270.f;
 	}
@@ -115,8 +115,8 @@ void Yarn::InitFromShooter( RoboCat* inShooter )
 	
 	SetVelocity(Vector3(temp.x, temp.y, 0) * mMuzzleSpeed);
 	SetLocation( inShooter->GetLocation() /*+ Vector3(temp.x,temp.y,0) * 0.55f*/ );
-
-	SetRotation( inShooter->GetRotation() );
+	
+	SetRotation(  rot);
 }
 
 void Yarn::Update()

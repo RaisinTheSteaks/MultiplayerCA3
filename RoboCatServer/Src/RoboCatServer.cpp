@@ -72,8 +72,7 @@ void RoboCatServer::Update()
 void RoboCatServer::HandleShooting()
 {
 	float time = Timing::sInstance.GetFrameStartTime();
-	if (mIsShootRight || mIsShootLeft)
-		int x = 10;
+	
 	if( mIsShooting && Timing::sInstance.GetFrameStartTime() > mTimeOfNextShot )
 	{
 		//not exact, but okay
