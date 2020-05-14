@@ -66,7 +66,7 @@ void NetworkManagerServer::ProcessPacket( ClientProxyPtr inClientProxy, InputMem
 			HandleInputPacket( inClientProxy, inInputStream );
 		}
 		break;
-	case kTestCC:
+	case kReadyCC:
 		SendRespondTestPacket(inClientProxy, inInputStream);
 		break;
 	default:
@@ -87,15 +87,20 @@ void NetworkManagerServer::SendRespondTestPacket(ClientProxyPtr inClientProxy, I
 		mPlayerReady[playerID] = inClientProxy;
 		if (mPlayerReady.size() == mPlayerIdToClientMap.size())
 		{
-			respondPacket.Write(kRespondCC);
-
-			for (auto it = mPlayerReady.begin(), end = mPlayerReady.end(); it != end; ++it)
+			respondPacket.Write(kStartCC);
+			mIsAllPlayerReady = true;
+			for (auto it = mPlayerIdToClientMap.begin(), end = mPlayerIdToClientMap.end(); it != end; ++it)
 			{
 				ClientProxyPtr clientProxy = it->second;
 				SendPacket(respondPacket, clientProxy->GetSocketAddress());
-				mIsAllPlayerReady = true;
 			}
 		}
+		else
+		{
+			NotifyPlayerCount(inClientProxy);
+		}
+
+		
 		
 	}
 
@@ -142,6 +147,7 @@ void NetworkManagerServer::HandlePacketFromNewClient( InputMemoryBitStream& inIn
 
 		//and welcome the client...
 		SendWelcomePacket( newClientProxy );
+		NotifyPlayerCount(newClientProxy);
 
 		//and now init the replication manager with everything we know about!
 		for( const auto& pair: mNetworkIdToGameObjectMap )
@@ -156,16 +162,34 @@ void NetworkManagerServer::HandlePacketFromNewClient( InputMemoryBitStream& inIn
 	}
 }
 
+void NetworkManagerServer::NotifyPlayerCount(ClientProxyPtr inClientProxy)
+{
+	OutputMemoryBitStream notifyPacket;
+
+	notifyPacket.Write(kPlayerCountCC);
+	notifyPacket.Write((int)mPlayerIdToClientMap.size());
+	notifyPacket.Write((int)mPlayerReady.size());
+
+
+	for (auto it = mPlayerIdToClientMap.begin(), end = mPlayerIdToClientMap.end(); it != end; ++it)
+	{
+		ClientProxyPtr clientProxy = it->second;
+		SendPacket(notifyPacket, clientProxy->GetSocketAddress());
+	}
+}
+
 void NetworkManagerServer::SendWelcomePacket( ClientProxyPtr inClientProxy )
 {
 	OutputMemoryBitStream welcomePacket; 
 
 	welcomePacket.Write( kWelcomeCC );
 	welcomePacket.Write( inClientProxy->GetPlayerId() );
-
 	LOG( "Server Welcoming, new client '%s' as player %d", inClientProxy->GetName().c_str(), inClientProxy->GetPlayerId() );
 
 	SendPacket( welcomePacket, inClientProxy->GetSocketAddress() );
+
+	
+
 }
 
 void NetworkManagerServer::RespawnCats()
@@ -335,6 +359,11 @@ void NetworkManagerServer::HandleClientDisconnected( ClientProxyPtr inClientProx
 	if( mAddressToClientMap.empty() )
 	{
 		Engine::sInstance->SetShouldKeepRunning( false );
+	}
+
+	if (!mIsAllPlayerReady)
+	{
+		NotifyPlayerCount(inClientProxy);
 	}
 }
 

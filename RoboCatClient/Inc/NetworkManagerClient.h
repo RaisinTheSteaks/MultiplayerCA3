@@ -27,12 +27,14 @@ public:
 			float	GetLastMoveProcessedByServerTimestamp()					const	{ return mLastMoveProcessedByServerTimestamp; }
 			void	SetStateToTest();
 			void	SetStateToWelcomed();
+			int		GetReadyPlayerCount()									const	{ return mReadyCount; }
+			int		GetTotalPlayerCount()									const { return mTotalPlayer;  }
 			NetworkClientState GetNetworkState()							const { return mState; }
 private:
 			NetworkManagerClient();
 			void Init( const SocketAddress& inServerAddress, const string& inName );
 
-			void	SendTestPacket();
+			void	SendReadyPacket();
 
 			void	UpdateSayingHello();
 			void	SendHelloPacket();
@@ -63,10 +65,13 @@ private:
 
 	string				mName;
 	int					mPlayerId;
+	int					mReadyCount;
+	int					mTotalPlayer;
 
 	float				mLastMoveProcessedByServerTimestamp;
 
 	WeightedTimedMovingAverage	mAvgRoundTripTime;
 	float						mLastRoundTripTime;
+
 
 };

@@ -66,7 +66,8 @@ void SFRenderManager::RenderUI()
 {
 	sf::Font bebas = *FontManager::sInstance->GetFont("bebas");
 
-	sf::Text RTT, InOut, Score, Ready;
+	sf::Text RTT, InOut, Score, Ready, ReadyCount;
+
 
 	sf::Vector2f basePos(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2);
 
@@ -82,17 +83,24 @@ void SFRenderManager::RenderUI()
 	InOut.setCharacterSize(24);
 	Score.setCharacterSize(24);
 	Ready.setPosition(basePos.x + 700, basePos.y + 20);
+	ReadyCount.setPosition(basePos.x + 400, basePos.y + 20);
+
 
 	RTT.setFont(bebas);
 	InOut.setFont(bebas);
 	Ready.setFont(bebas);
+	ReadyCount.setFont(bebas);
+
 
 	RTT.setCharacterSize(24);
 	InOut.setCharacterSize(24);
 	Ready.setCharacterSize(24);
+	ReadyCount.setCharacterSize(24);
+
 	
 	RTT.setFillColor(sf::Color::Red);
 	InOut.setFillColor(sf::Color::Red);
+	ReadyCount.setFillColor(sf::Color::Green);
 	Score.setFillColor(sf::Color::Green);
 	
 
@@ -109,8 +117,14 @@ void SFRenderManager::RenderUI()
 
 	InOut.setString(bandwidth);
 
+	int readyPlayers = NetworkManagerClient::sInstance->GetReadyPlayerCount();
+	int totalPlayers = NetworkManagerClient::sInstance->GetTotalPlayerCount();
+	string readyCount = StringUtils::Sprintf("Ready Player: %d out of %d", readyPlayers, totalPlayers);
+	ReadyCount.setString(readyCount);
+
 	//Score
 	Score.setString(scoreString);
+
 	sf::Color readyColor;
 	string readyText;
 
@@ -131,6 +145,9 @@ void SFRenderManager::RenderUI()
 		Ready.setFillColor(readyColor);
 		Ready.setString(readyText);
 		SFWindowManager::sInstance->draw(Ready);
+
+		SFWindowManager::sInstance->draw(ReadyCount);
+
 
 	}
 			

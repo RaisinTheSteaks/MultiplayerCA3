@@ -39,7 +39,6 @@ void NetworkManagerClient::Init( const SocketAddress& inServerAddress, const str
 	mState = NCS_SayingHello;
 	mTimeOfLastHello = 0.f;
 	mName = inName;
-
 	mAvgRoundTripTime = WeightedTimedMovingAverage( 1.f );
 }
 
@@ -58,8 +57,15 @@ void NetworkManagerClient::ProcessPacket( InputMemoryBitStream& inInputStream, c
 			HandleStatePacket( inInputStream );
 		}
 		break;
-	case kRespondCC:
-		LOG("'%s' got test packet back", mName.c_str());
+	case kPlayerCountCC:
+		int totalPlayer, readyPlayer;
+		inInputStream.Read(totalPlayer);
+		inInputStream.Read(readyPlayer);
+		mTotalPlayer = totalPlayer;
+		mReadyCount = readyPlayer;
+		break;
+	case kStartCC:
+		LOG("'%s' you can start the game now", mName.c_str());
 		mState = NCS_GameStart;
 		break;
 	}
@@ -77,16 +83,16 @@ void NetworkManagerClient::SendOutgoingPackets()
 		UpdateSendingInputPacket();
 		break;
 	case NCS_Test:
-		SendTestPacket();
+		SendReadyPacket();
 		break;
 	}
 }
 
-void NetworkManagerClient::SendTestPacket()
+void NetworkManagerClient::SendReadyPacket()
 {
 	OutputMemoryBitStream testPacket;
 
-	testPacket.Write(kTestCC);
+	testPacket.Write(kReadyCC);
 	testPacket.Write(mPlayerId);
 
 	SendPacket(testPacket, mServerAddress);
@@ -118,7 +124,7 @@ void NetworkManagerClient::HandleWelcomePacket( InputMemoryBitStream& inInputStr
 	if( mState == NCS_SayingHello )
 	{
 		//if we got a player id, we've been welcomed!
-		int playerId;
+		int playerId, totalPlayer;
 		inInputStream.Read( playerId );
 		mPlayerId = playerId;
 		mState = NCS_Welcomed;
